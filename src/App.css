@@ -1,13 +1,4 @@
 .active {
-  color: red;
-  font-weight: bold;
-}
-
-.row-normal:hover, .row-favorite:hover {
-  background-color: #f1f1f1;
-}
-
-
-.row-favorite {
-  background-color: #fffacd;
+  background-color: purple;
+  color: white;
 }
