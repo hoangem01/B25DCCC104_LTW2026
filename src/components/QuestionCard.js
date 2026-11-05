@@ -1,7 +1,7 @@
 import AnswerButton from './AnswerButton';
 import { LEVELS, POINTS } from '../data';
 
-const QuestionCard = ({ question, currentIndex, onSelect, status, selectedAnswer }) => {
+const QuestionCard = ({ question, currentIndex, onSelect, status, selectedAnswer, hiddenOptions }) => {
   return (
     <div>
       <h3>Câu {currentIndex + 1}/15 - {LEVELS[question.level]} - {POINTS[question.level]} điểm</h3>
@@ -16,6 +16,7 @@ const QuestionCard = ({ question, currentIndex, onSelect, status, selectedAnswer
             status={status}
             selectedAnswer={selectedAnswer}
             correctAnswer={question.answer}
+            isHidden={hiddenOptions.includes(idx)}
           />
         ))}
       </div>

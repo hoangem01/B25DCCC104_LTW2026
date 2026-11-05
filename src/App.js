@@ -16,6 +16,15 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [playerName, setPlayerName] = useState('');
+  
+  const [history, setHistory] = useState(() => {
+    const saved = localStorage.getItem('ltw_3mang_history');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('ltw_3mang_history', JSON.stringify(history));
+  }, [history]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -33,13 +42,17 @@ const App = () => {
     return () => controller.abort();
   }, []);
 
+  const addHistory = (record) => {
+    setHistory(prev => [...prev, record]);
+  };
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home setPlayerName={setPlayerName} />} />
-        <Route path="play" element={<Play playerName={playerName} questions={questions} />} />
+        <Route index element={<Home setPlayerName={setPlayerName} history={history} />} />
+        <Route path="play" element={<Play playerName={playerName} questions={questions} addHistory={addHistory} />} />
         <Route path="result" element={<Result />} />
-        <Route path="history" element={<History />} />
+        <Route path="history" element={<History history={history} setHistory={setHistory} />} />
         <Route path="questions" element={
           loading ? <div>Đang tải câu hỏi...</div> : 
           error ? <div>Không tải được câu hỏi</div> : 

@@ -1,6 +1,6 @@
 import { LETTERS } from '../data';
 
-const AnswerButton = ({ index, option, onSelect, status, selectedAnswer, correctAnswer }) => {
+const AnswerButton = ({ index, option, onSelect, status, selectedAnswer, correctAnswer, isHidden }) => {
   let bgColor = 'transparent';
   
   if (status === 'locked' && selectedAnswer === index) {
@@ -13,10 +13,10 @@ const AnswerButton = ({ index, option, onSelect, status, selectedAnswer, correct
   return (
     <button 
       style={{ backgroundColor: bgColor, margin: '5px', padding: '10px' }} 
-      disabled={status !== 'answering'}
+      disabled={status !== 'answering' || isHidden}
       onClick={() => onSelect(index)}
     >
-      {LETTERS[index]}. {option}
+      {isHidden ? '' : `${LETTERS[index]}. ${option}`}
     </button>
   );
 };

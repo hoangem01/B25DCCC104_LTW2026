@@ -10,6 +10,9 @@ export const calcScore = (results, questions) => {
         streak: newStreak
       };
     }
+    if (result === 'skipped') {
+      return acc;
+    }
     return {
       ...acc,
       streak: 0

@@ -2,3 +2,156 @@
   background-color: purple;
   color: white;
 }
+/* --- Cài đặt chung --- */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f2f5;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* --- Khung nội dung chính (Căn giữa, tạo viền nổi) --- */
+#root > div > div:not(nav) {
+  max-width: 800px;
+  margin: 30px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Thanh Điều Hướng (Menu) --- */
+nav {
+  background-color: #282c34;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+nav a {
+  color: #abb2bf;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+nav a:hover {
+  background-color: #3e4451;
+  color: white;
+  text-decoration: none;
+}
+
+/* Mục đang xem có nền tím, chữ trắng */
+nav a.active {
+  background-color: #9c27b0;
+  color: white;
+}
+
+/* --- Nút Bấm (Button) --- */
+button {
+  padding: 10px 16px;
+  margin-right: 30px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0,123,255,0.2);
+}
+
+button:hover:not(:disabled) {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  background-color: #cccccc;
+  color: #777777;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Nút đáp án trong lưới 2x2 */
+div[style*="grid"] button {
+  font-size: 16px;
+  border: 2px solid #e2e8f0;
+  color: #333;
+}
+
+/* --- Ô nhập liệu (Input) & Dropdown (Select) --- */
+input[type="text"], select {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input[type="text"]:focus, select:focus {
+  border-color: #007bff;
+}
+
+/* --- Bảng (Table) --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  border: 1px solid #e0e0e0;
+  padding: 14px;
+  text-align: left;
+}
+
+th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+}
+
+tr:hover td {
+  background-color: #e2dfdf;
+}
+
+/* --- Typography (Tiêu đề, Text) --- */
+h2, h3 {
+  color: #2c3e50;
+  margin-top: 0;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+/* --- Tinh chỉnh ProgressBar --- */
+div[style*="flex"] > div[style*="width: 25px"] {
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  color: #333;
+}

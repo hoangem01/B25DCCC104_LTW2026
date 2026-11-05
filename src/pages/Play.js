@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import QuestionCard from '../components/QuestionCard';
 import StatusBar from '../components/StatusBar';
 import ProgressBar from '../components/ProgressBar';
+import Helpers from '../components/Helpers';
 import { TOTAL_TIME, MAX_LIVES } from '../data';
 import { calcScore } from '../utils';
 
-const Play = ({ playerName, questions }) => {
+const Play = ({ playerName, questions, addHistory }) => {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
@@ -14,6 +15,18 @@ const Play = ({ playerName, questions }) => {
   const [results, setResults] = useState([]);
   const [status, setStatus] = useState('answering');
   const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+  const [hiddenOptions, setHiddenOptions] = useState([]);
+  const [used5050, setUsed5050] = useState(false);
+  const [usedSkip, setUsedSkip] = useState(false);
+  const [usedAddLife, setUsedAddLife] = useState(false);
+
+  useEffect(() => {
+    document.title = `Câu ${currentIndex + 1}/15 - còn ${lives} mạng`;
+    return () => {
+      document.title = 'Thử thách 3 mạng';
+    };
+  }, [currentIndex, lives]);
 
   useEffect(() => {
     if (status !== 'answering') return;
@@ -29,16 +42,28 @@ const Play = ({ playerName, questions }) => {
     return () => clearInterval(timer);
   }, [status]);
 
+  const finishGame = useCallback((finalResults, finalLives, reason) => {
+    const finalScore = calcScore(finalResults, questions);
+    const correctCount = finalResults.filter(r => r === 'correct').length;
+    addHistory({
+      id: Date.now(),
+      name: playerName,
+      score: finalScore.score,
+      correctCount,
+      livesLeft: finalLives,
+      playedAt: new Date().toLocaleString("vi-VN")
+    });
+    navigate('/result', {
+      replace: true,
+      state: { playerName, score: finalScore.score, correctCount, livesLeft: finalLives, reason }
+    });
+  }, [addHistory, navigate, playerName, questions]);
+
   useEffect(() => {
     if (timeLeft === 0 && status === 'answering') {
-      const finalScore = calcScore(results, questions);
-      const correctCount = results.filter(r => r === 'correct').length;
-      navigate('/result', {
-        replace: true,
-        state: { playerName, score: finalScore.score, correctCount, livesLeft: lives, reason: 'timeout' }
-      });
+      finishGame(results, lives, 'timeout');
     }
-  }, [timeLeft, status, results, questions, lives, navigate, playerName]);
+  }, [timeLeft, status, results, lives, finishGame]);
 
   useEffect(() => {
     let timeout;
@@ -54,52 +79,79 @@ const Play = ({ playerName, questions }) => {
         setLives(newLives);
 
         if (newLives === 0) {
-          const finalScore = calcScore(newResults, questions);
-          const correctCount = newResults.filter(r => r === 'correct').length;
-          navigate('/result', {
-            replace: true,
-            state: { playerName, score: finalScore.score, correctCount, livesLeft: 0, reason: 'no_lives' }
-          });
+          finishGame(newResults, 0, 'no_lives');
         } else if (currentIndex === 14) {
-          const finalScore = calcScore(newResults, questions);
           const correctCount = newResults.filter(r => r === 'correct').length;
-          const reason = correctCount === 15 ? 'perfect' : 'finished';
-          navigate('/result', {
-            replace: true,
-            state: { playerName, score: finalScore.score, correctCount, livesLeft: newLives, reason }
-          });
+          finishGame(newResults, newLives, correctCount === 15 ? 'perfect' : 'finished');
         } else {
           setCurrentIndex(prev => prev + 1);
           setSelectedAnswer(null);
+          setHiddenOptions([]);
           setStatus('answering');
         }
       }, 1000);
     }
     return () => clearTimeout(timeout);
-  }, [status, selectedAnswer, currentIndex, questions, results, lives, navigate, playerName]);
+  }, [status, selectedAnswer, currentIndex, questions, results, lives, finishGame]);
 
-  if (!playerName) {
-    return <Navigate to="/" replace />;
-  }
+  const handleSelect = useCallback((index) => {
+    if (status !== 'answering' || hiddenOptions.includes(index)) return;
+    setSelectedAnswer(index);
+    setStatus('locked');
+  }, [status, hiddenOptions]);
 
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (status !== 'answering') return;
+      const key = e.key.toLowerCase();
+      const map = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
+      if (map[key] !== undefined) {
+        handleSelect(map[key]);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [status, handleSelect]);
+
+  if (!playerName) return <Navigate to="/" replace />;
   if (questions.length === 0) return <div>Đang tải dữ liệu...</div>;
 
   const currentQuestion = questions[currentIndex];
   const scoreData = calcScore(results, questions);
 
-  const handleSelect = (index) => {
-    setSelectedAnswer(index);
-    setStatus('locked');
+  const handle5050 = () => {
+    setUsed5050(true);
+    const incorrects = [0, 1, 2, 3].filter(i => i !== currentQuestion.answer);
+    const hidden = [];
+    while (hidden.length < 2) {
+      const rand = incorrects[Math.floor(Math.random() * incorrects.length)];
+      if (!hidden.includes(rand)) hidden.push(rand);
+    }
+    setHiddenOptions(hidden);
+  };
+
+  const handleSkip = () => {
+    setUsedSkip(true);
+    const newResults = [...results, 'skipped'];
+    setResults(newResults);
+    if (currentIndex === 14) {
+      const correctCount = newResults.filter(r => r === 'correct').length;
+      finishGame(newResults, lives, correctCount === 15 ? 'perfect' : 'finished');
+    } else {
+      setCurrentIndex(prev => prev + 1);
+      setHiddenOptions([]);
+      setStatus('answering');
+    }
+  };
+
+  const handleAddLife = () => {
+    setUsedAddLife(true);
+    setLives(prev => Math.min(prev + 1, MAX_LIVES));
   };
 
   return (
     <div>
-      <StatusBar 
-        timeLeft={timeLeft} 
-        lives={lives} 
-        score={scoreData.score} 
-        streak={scoreData.streak} 
-      />
+      <StatusBar timeLeft={timeLeft} lives={lives} score={scoreData.score} streak={scoreData.streak} />
       <ProgressBar results={results} currentIndex={currentIndex} />
       <QuestionCard 
         question={currentQuestion}
@@ -107,6 +159,17 @@ const Play = ({ playerName, questions }) => {
         onSelect={handleSelect}
         status={status}
         selectedAnswer={selectedAnswer}
+        hiddenOptions={hiddenOptions}
+      />
+      <Helpers 
+        status={status}
+        lives={lives}
+        used5050={used5050}
+        usedSkip={usedSkip}
+        usedAddLife={usedAddLife}
+        on5050={handle5050}
+        onSkip={handleSkip}
+        onAddLife={handleAddLife}
       />
     </div>
   );
