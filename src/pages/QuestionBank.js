@@ -27,7 +27,7 @@ const QuestionBank = ({ questions }) => {
         <option value="2">Trung bình</option>
         <option value="3">Khó</option>
       </select>
-      <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} />
+      <input type="text" value={search} placeholder = "Câu hỏi" onChange={(e) => setSearch(e.target.value)} />
       <div>Có {filteredQuestions.length} câu hỏi</div>
       <button onClick={handleRandom} disabled={filteredQuestions.length === 0}>Câu ngẫu nhiên</button>
       
