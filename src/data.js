@@ -3,3 +3,4 @@ export const LEVELS = { 1: 'Dễ', 2: 'Trung bình', 3: 'Khó' };
 export const LETTERS = ['A', 'B', 'C', 'D']; 
 export const TOTAL_TIME = 90; 
 export const STREAK_BONUS = 50;export const formatScore = (n) => `${n.toLocaleString('vi-VN')} điểm`;
+
