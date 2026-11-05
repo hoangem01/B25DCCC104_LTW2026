@@ -1,14 +1,12 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const NavBar = () => {
   return (
-    <nav style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>
-      <NavLink to="/" end className={({ isActive }) => isActive ? 'active' : ''} style={{ marginRight: '15px' }}>Trang chủ</NavLink>
-      <NavLink to="/contacts" end className={({ isActive }) => isActive ? 'active' : ''} style={{ marginRight: '15px' }}>Danh sách</NavLink>
-      <NavLink to="/contacts/new" end className={({ isActive }) => isActive ? 'active' : ''}>Thêm mới</NavLink>
+    <nav>
+      <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>Trang chủ</NavLink>
+      <NavLink to="/questions" className={({ isActive }) => (isActive ? 'active' : '')}>Ngân hàng câu hỏi</NavLink>
+      <NavLink to="/history" className={({ isActive }) => (isActive ? 'active' : '')}>Lịch sử</NavLink>
     </nav>
   );
 };
-
 export default NavBar;
