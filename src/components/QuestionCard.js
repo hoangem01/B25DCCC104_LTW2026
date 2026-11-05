@@ -5,7 +5,7 @@ const QuestionCard = ({ question, currentIndex, onSelect, status, selectedAnswer
   return (
     <div>
       <h3>Câu {currentIndex + 1}/15 - {LEVELS[question.level]} - {POINTS[question.level]} điểm</h3>
-      <p>{question.question}</p>
+      <p style= {{margin: '12px 0', fontWeight: '600', color: 'black'}}>{question.question}</p>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
         {question.options.map((opt, idx) => (
           <AnswerButton 

@@ -18,7 +18,7 @@ const Home = ({ setPlayerName, history }) => {
   return (
     <div>
       <h2>Thử thách 3 mạng</h2>
-      <p>Luật chơi: 15 câu hỏi, 3 mạng, 90 giây. Trả lời đúng được điểm, sai mất mạng.</p>
+      <p style= {{margin: '12px 0', fontWeight: '600', color: 'black'}}>Luật chơi: 15 câu hỏi, 3 mạng, 90 giây. Trả lời đúng được điểm, sai mất mạng.</p>
       {highestRecord && (
         <p>Kỷ lục: {formatScore(highestRecord.score)} - {highestRecord.name}</p>
       )}

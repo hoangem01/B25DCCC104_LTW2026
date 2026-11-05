@@ -17,9 +17,9 @@ const History = ({ history, setHistory }) => {
         <p>Chưa có lượt chơi nào.</p>
       ) : (
         <>
-          <div>Số lượt chơi: {count}</div>
-          <div>Điểm cao nhất: {formatScore(maxScore)}</div>
-          <div>Tổng số câu trả lời đúng: {totalCorrect}</div>
+          <div style= {{margin: '12px 0', fontWeight: '600', color: 'black'}}>Số lượt chơi: <span style={{ color: '#007bff', fontWeight: 'bold', fontSize: '18px' }}>{count}</span></div>
+          <div style= {{margin: '12px 0', fontWeight: '600', color: 'black'}}>Điểm cao nhất: {formatScore(maxScore)}</div>
+          <div style= {{margin: '12px 0', fontWeight: '600', color: 'black'}}>Tổng số câu trả lời đúng: {totalCorrect}</div>
           <button onClick={() => setHistory([])} style={{ margin: '10px 0' }}>Xóa lịch sử</button>
           <table border="1" cellPadding="5" style={{ borderCollapse: 'collapse', width: '100%' }}>
             <thead>
